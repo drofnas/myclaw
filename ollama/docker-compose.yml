@@ -1,0 +1,32 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+      - ./modelfiles:/modelfiles:ro  # <--- Ollama MUST have this to read the files
+    ports:
+      - "100.69.56.44:11434:11434"
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    environment:
+      - OLLAMA_VULKAN=1
+      - HSA_OVERRIDE_GFX_VERSION=11.0.2
+      - OLLAMA_MAX_LOADED_MODELS=2
+      - OLLAMA_KEEP_ALIVE=-1
+      - OLLAMA_GPU_OVERHEAD=0            # reduces memory Ollama reserves as a buffer
+      - GGML_VK_DISABLE_SMALL_POOLS=1   # forces larger contiguous allocations
+      - GGML_VK_HEAP_SIZE=103079215104   # explicit heap hint: 96GB in bytes
+
+    networks:
+      - openclaw_net
+
+networks:
+  openclaw_net:
+    driver: bridge
+
+
+volumes:
+  ollama_data:

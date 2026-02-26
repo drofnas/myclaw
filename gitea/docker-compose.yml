@@ -1,0 +1,24 @@
+services:
+  gitea:
+    image: gitea/gitea:1.21
+    container_name: gitea
+    restart: always
+    environment:
+      - GITEA__database__DB_TYPE=sqlite3 # No extra DB container needed
+      - GITEA__server__DOMAIN=theboss.your-tailnet.ts.net
+      - GITEA__server__SSH_PORT=2222
+      - GITEA__server__HTTP_PORT=3000
+      - GITEA__server__ROOT_URL=http://100.69.56.44:3000
+    ports:
+      # Bind only to Tailscale to keep the AI code private
+      - "100.69.56.44:3000:3000"
+      - "100.69.56.44:2222:22"
+    volumes:
+      - ./gitea_data:/data
+    networks:
+      - openclaw_net
+
+networks:
+  openclaw_net:
+    external: true
+    name: ollama_openclaw_net
