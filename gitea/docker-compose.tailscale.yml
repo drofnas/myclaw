@@ -1,0 +1,24 @@
+services:
+  tailscale-gitea:
+    image: tailscale/tailscale:stable
+    container_name: myclaw-gitea-tailscale
+    restart: unless-stopped
+    environment:
+      - TS_AUTHKEY=${MYCLAW_TS_AUTHKEY:-}
+      - TS_AUTH_ONCE=true
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=true
+      - TS_HOSTNAME=${MYCLAW_GITEA_TS_HOSTNAME:-myclaw-gitea}
+      - TS_SERVE_CONFIG=/config/serve.json
+    volumes:
+      - myclaw-gitea-ts-state:/var/lib/tailscale
+      - ./config/tailscale-gitea-serve.json:/config/serve.json:ro
+
+  gitea:
+    depends_on:
+      - tailscale-gitea
+    network_mode: service:tailscale-gitea
+    ports: []
+
+volumes:
+  myclaw-gitea-ts-state:
