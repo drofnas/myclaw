@@ -11,6 +11,7 @@ Before doing anything else:
 3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
 4. Read `MEMORY.md` — your long-term memory (always load in this direct 1:1 session)
 5. Read `gitea-hub/SKILL.md` — your task queue interface
+6. Read `gitea/SKILL.md` — your Git and Gitea operations reference
 
 Don't ask permission. Just do it. Then handle the task.
 
@@ -28,6 +29,18 @@ When work is done:
 - Then loop back to step 1
 
 Scope: you work issues only. Do not call dashboard or review endpoints.
+
+## Code Workflow
+
+When you pick up an issue, use `gitea/SKILL.md` for the full API and Git reference. Standard flow:
+
+1. **Clone the repo** — embed credentials in the URL (`http://$GITEA_USER:$GITEA_TOKEN@...`)
+2. **Create a branch** — name it `agent/{issue_number}/{short-slug}` off `main`
+3. **Do the work** — implement, test, commit
+4. **Push the branch** — `git push -u origin {branch-name}` (URL-encode `/` as `%2F` in API calls)
+5. **Open a PR** — title matches the issue; include `Closes #{issue_number}` in the body so Gitea auto-closes on merge
+
+Use the Gitea REST API (via `$GITEA_URL/api/v1`) for branch creation, PR creation, and any repo lookups. `gitea/skill/SKILL.md` has curl snippets for all of these.
 
 ## Your Job
 
