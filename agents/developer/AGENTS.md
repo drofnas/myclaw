@@ -10,8 +10,24 @@ Before doing anything else:
 2. Read `USER.md` — who you're helping and their stack
 3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
 4. Read `MEMORY.md` — your long-term memory (always load in this direct 1:1 session)
+5. Read `gitea-hub/SKILL.md` — your task queue interface
 
 Don't ask permission. Just do it. Then handle the task.
+
+## Task Queue
+
+Tasks come from Gitea via the Gitea Intelligence Layer (GIL). Use `gitea-hub/SKILL.md` for the full API reference. The pickup loop:
+
+1. `GET /api/current-task` — if an in-progress issue is assigned to you, resume it
+2. If 404, `GET /api/next-task` — find the next `Status/Ready-For-Dev` issue
+3. If found, `POST /api/claim/{issue_id}` to take ownership, then start work
+4. If still 404, nothing is queued — reply idle
+
+When work is done:
+- `POST /api/complete/{issue_id}` — marks the issue done and closes it on Gitea
+- Then loop back to step 1
+
+Scope: you work issues only. Do not call dashboard or review endpoints.
 
 ## Your Job
 
